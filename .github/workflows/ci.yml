@@ -56,7 +56,24 @@ jobs:
       - name: wheel metadata check
         run: python -m twine check target/wheels/*
       - name: install extension
-        run: pip install --force-reinstall --no-deps target/wheels/retrievalx-*.whl
+        run: |
+          shopt -s nullglob
+          wheels=(target/wheels/retrievalx-*.whl)
+          shopt -u nullglob
+
+          if [[ ${#wheels[@]} -eq 0 ]]; then
+            echo "No wheels found in target/wheels after build" >&2
+            exit 1
+          fi
+
+          wheel_path="${wheels[0]}"
+          for w in "${wheels[@]}"; do
+            if [[ "$w" -nt "$wheel_path" ]]; then
+              wheel_path="$w"
+            fi
+          done
+
+          pip install --force-reinstall --no-deps "$wheel_path"
       - name: smoke import
         run: python -c "import retrievalx; print(retrievalx.__version__ if hasattr(retrievalx, '__version__') else 'ok')"
       - name: lint
