@@ -434,10 +434,7 @@ fn hits_to_tuples(results: Vec<retrievalx_core::index::SearchResult>) -> Vec<(St
 }
 
 fn fusion_to_tuples(results: Vec<fusion::FusionResult>) -> Vec<(String, f32)> {
-    results
-        .into_iter()
-        .map(|r| (r.doc_id, r.score))
-        .collect()
+    results.into_iter().map(|r| (r.doc_id, r.score)).collect()
 }
 
 fn vec_to_set(v: Vec<String>) -> HashSet<String> {
