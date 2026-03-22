@@ -1,16 +1,30 @@
+# Rust
 /target
+
+# Python
 **/__pycache__
 *.pyc
-.venv
-.audit-venv
-.pytest_cache
-.mypy_cache
-.ruff_cache
-.DS_Store
+*.pyo
+*.egg-info
 /dist
 /wheels
 *.so
 *.dylib
+*.pyd
 
+# Virtual environments
+.venv
+.audit-venv
+
+# Tool caches
+.pytest_cache
+.mypy_cache
+.ruff_cache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project
 /artifacts
 .cache/
