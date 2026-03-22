@@ -31,11 +31,11 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/retrievalx/retrievalx"
-Repository = "https://github.com/retrievalx/retrievalx"
-Documentation = "https://github.com/retrievalx/retrievalx/tree/main/docs"
-Changelog = "https://github.com/retrievalx/retrievalx/releases"
-Issues = "https://github.com/retrievalx/retrievalx/issues"
+Homepage = "https://github.com/Saswatsusmoy/retrievalx"
+Repository = "https://github.com/Saswatsusmoy/retrievalx"
+Documentation = "https://github.com/Saswatsusmoy/retrievalx/tree/main/docs"
+Changelog = "https://github.com/Saswatsusmoy/retrievalx/releases"
+Issues = "https://github.com/Saswatsusmoy/retrievalx/issues"
 
 [project.optional-dependencies]
 dev = [
