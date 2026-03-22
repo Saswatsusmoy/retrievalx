@@ -15,7 +15,7 @@ The complete BM25 engine for Python: all major scoring variants, multiple retrie
 pip install retrievalx
 ```
 
-Pre-built wheels for Linux (x86_64, aarch64), macOS (x86_64, ARM64), and Windows (x86_64). Python 3.9+.
+Pre-built wheels for Linux (x86_64, aarch64), macOS (x86_64, ARM64), and Windows (x86_64). Python 3.9 - 3.15.
 
 ## Quickstart
 
