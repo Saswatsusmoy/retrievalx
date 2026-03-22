@@ -1,13 +1,14 @@
 # retrievalx
 
 [![PyPI](https://img.shields.io/pypi/v/retrievalx)](https://pypi.org/project/retrievalx/)
+[![Downloads](https://img.shields.io/pypi/dm/retrievalx)](https://pypi.org/project/retrievalx/)
 [![Python](https://img.shields.io/pypi/pyversions/retrievalx)](https://pypi.org/project/retrievalx/)
 [![License](https://img.shields.io/pypi/l/retrievalx)](https://github.com/Saswatsusmoy/retrievalx/blob/main/LICENSE)
 [![CI](https://github.com/Saswatsusmoy/retrievalx/actions/workflows/ci.yml/badge.svg)](https://github.com/Saswatsusmoy/retrievalx/actions/workflows/ci.yml)
 
-The complete BM25 engine for Python: all major scoring variants, multiple retrieval strategies, Rust-native performance.
+The complete BM25 engine for Python — all major scoring variants, multiple retrieval strategies, Rust-native performance.
 
-**48-92x faster** than rank-bm25 with equal or better retrieval quality on BEIR benchmarks.
+**48-92x faster** than [rank-bm25](https://github.com/dorianbrown/rank_bm25) with equal or better retrieval quality on [BEIR](https://github.com/beir-cellar/beir) benchmarks.
 
 ## Installation
 
@@ -15,26 +16,36 @@ The complete BM25 engine for Python: all major scoring variants, multiple retrie
 pip install retrievalx
 ```
 
-Pre-built wheels for Linux (x86_64, aarch64), macOS (x86_64, ARM64), and Windows (x86_64). Python 3.9 - 3.15.
+Pre-built wheels available for:
+
+| Platform | Architectures |
+|----------|--------------|
+| Linux | x86_64, aarch64 |
+| macOS | x86_64, ARM64 (Apple Silicon) |
+| Windows | x86_64 |
+
+Supports **Python 3.9 through 3.15** (including 3.14 and 3.15 pre-releases). Zero dependencies.
 
 ## Quickstart
 
 ```python
 from retrievalx import BM25Index
 
+# Index documents
 index = BM25Index.from_documents([
     "rust and python",
     "information retrieval with bm25",
     "search engine internals",
 ])
 
+# Search
 for hit in index.search("rust retrieval", top_k=2):
     print(f"{hit.doc_id}: {hit.score:.4f}")
 ```
 
 ## Features
 
-### Scoring Variants
+### 8 Scoring Variants
 
 BM25 Okapi, Plus, L, Adpt, F (field-weighted), T (term-specific k1), Atire, and Tf-Idf.
 
@@ -45,32 +56,36 @@ config = BM25Config(scoring=ScoringVariant.plus(k1=1.5, b=0.8, delta=1.0))
 index = BM25Index.from_documents(docs, config=config)
 ```
 
-### Retrieval Strategies
+### 5 Retrieval Strategies
 
-Exhaustive DAAT/TAAT, WAND, Block-Max WAND, and MaxScore — choose between exact and approximate top-k retrieval.
+Exhaustive DAAT/TAAT, WAND, Block-Max WAND, and MaxScore.
 
 ```python
 from retrievalx import RetrievalStrategy
 
+# Exact retrieval
+config = BM25Config(retrieval=RetrievalStrategy.exhaustive_taat())
+
+# Fast approximate top-k
 config = BM25Config(retrieval=RetrievalStrategy.block_max_wand())
 ```
 
-### Query Types
+### Advanced Query Types
 
 ```python
 from retrievalx import BooleanQuery, PhraseQuery, WeightedQuery
 
-# Boolean query
+# Boolean: must/should/must_not
 index.search_boolean(BooleanQuery(must=["python"], should=["fast"], must_not=["slow"]))
 
-# Phrase query with proximity window
+# Phrase with proximity window
 index.search_phrase(PhraseQuery(terms=["information", "retrieval"], window=2))
 
 # Weighted terms
 index.search_weighted(WeightedQuery(weights={"python": 2.0, "search": 1.0}))
 ```
 
-### Persistence & WAL
+### Persistence & Crash Recovery
 
 ```python
 # Save and load
@@ -84,6 +99,18 @@ index.insert_batch(new_docs)
 index.compact_and_flush("index.bin")
 ```
 
+### Incremental Updates
+
+```python
+# Add documents (with optional IDs)
+index.insert_batch(["new document text"])
+index.insert_batch([("doc-id", "document with custom ID")])
+
+# Delete and compact
+index.delete("doc-id")
+index.compact()
+```
+
 ### Score Fusion
 
 Combine BM25 with dense retrieval or other signals:
@@ -93,28 +120,48 @@ from retrievalx import rrf, linear_combination, min_max_normalize
 
 fused = rrf(bm25_results, dense_results, k=60)
 fused = linear_combination(bm25_results, dense_results, alpha=0.7)
+normalized = min_max_normalize(scores)
 ```
 
 ### Evaluation Metrics
 
+Built-in IR metrics with native acceleration:
+
 ```python
-from retrievalx import ndcg_at_k, recall_at_k, mrr
+from retrievalx import ndcg_at_k, recall_at_k, precision_at_k, mrr, average_precision_at_k
 
 ndcg = ndcg_at_k(ranked_ids, relevant_ids, k=10)
+```
+
+### Custom Tokenization
+
+```python
+from retrievalx import BM25Config, TokenizerConfig, Tokenizer, Filter, Stemmer
+
+config = BM25Config(
+    tokenizer=TokenizerConfig(
+        tokenizer=Tokenizer.UNICODE,
+        filters=[Filter.LOWERCASE, Filter.stopwords("en"), Filter.length(min_len=2)],
+        stemmer=Stemmer.snowball("en"),
+    )
+)
 ```
 
 ## Benchmarks
 
 On [BEIR SciFact](https://huggingface.co/datasets/BeIR/scifact) (5,183 documents, 300 queries):
 
-| Engine | QPS | nDCG@10 | Build (ms) |
-|--------|----:|--------:|-----------:|
-| rank-bm25 (Okapi) | 134 | 0.5618 | 194 |
-| retrievalx (Exhaustive DAAT) | **6,505** | **0.5723** | 121 |
-| retrievalx (Block-Max WAND) | **4,919** | **0.5723** | 207 |
-| retrievalx (Exhaustive TAAT) | **11,935** | **0.5723** | 170 |
+| Engine | QPS | Speedup | nDCG@10 | P50 (ms) |
+|--------|----:|--------:|--------:|---------:|
+| rank-bm25 (Okapi) | 134 | 1x | 0.5618 | 6.964 |
+| **retrievalx** (Exhaustive DAAT) | **6,505** | **48x** | **0.5723** | 0.152 |
+| **retrievalx** (Block-Max WAND) | **4,919** | **37x** | **0.5723** | 0.151 |
+| **retrievalx** (Exhaustive TAAT) | **11,935** | **89x** | **0.5723** | 0.083 |
+| **retrievalx** (MaxScore) | **7,351** | **55x** | **0.5723** | 0.099 |
 
-Full results: [docs/benchmarks.md](docs/benchmarks.md) | [docs/rank_bm25_benchmarks.md](docs/rank_bm25_benchmarks.md)
+All retrieval strategies produce identical quality metrics — no accuracy tradeoff.
+
+Full 40-configuration matrix (8 scorers x 5 strategies): [docs/benchmarks.md](docs/benchmarks.md)
 
 ## Architecture
 
@@ -144,6 +191,7 @@ Details: [docs/architecture.md](docs/architecture.md) | [docs/algorithms.md](doc
 | [query_expansion_prf.py](examples/query_expansion_prf.py) | Pseudo-relevance feedback |
 | [custom_tokenizer.py](examples/custom_tokenizer.py) | Custom tokenizer pipeline |
 | [bm25f_structured_docs.py](examples/bm25f_structured_docs.py) | BM25F field-weighted scoring |
+| [rag_hybrid_pipeline.py](examples/rag_hybrid_pipeline.py) | RAG hybrid retrieval pipeline |
 | [benchmark_retrievalx_vs_rank_bm25.py](examples/benchmark_retrievalx_vs_rank_bm25.py) | Benchmark vs rank-bm25 |
 
 ## Development
@@ -161,7 +209,7 @@ pip install -e .[bench]
 python examples/benchmark_retrievalx_vs_rank_bm25.py --dataset scifact
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
