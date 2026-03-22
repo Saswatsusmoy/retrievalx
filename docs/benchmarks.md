@@ -4,7 +4,7 @@
 - Dataset: `scifact` (split `test`)
 - Python: `3.12.9`
 - Platform: `macOS-26.3.1-arm64-arm-64bit`
-- retrievalx: `0.1.0`
+- retrievalx: `0.1.3`
 - rank-bm25: `0.2.2`
 - Corpus size: `5183`
 - Query count: `300`

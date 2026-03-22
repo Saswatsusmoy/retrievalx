@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability (private)
-    url: https://github.com/retrievalx/retrievalx/security/advisories/new
+    url: https://github.com/Saswatsusmoy/retrievalx/security/advisories/new
     about: Report vulnerabilities privately per SECURITY.md.
   - name: Usage/support questions
-    url: https://github.com/retrievalx/retrievalx/discussions
+    url: https://github.com/Saswatsusmoy/retrievalx/discussions
     about: Ask questions and share usage help in discussions.
