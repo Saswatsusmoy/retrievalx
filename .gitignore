@@ -11,6 +11,6 @@
 /wheels
 *.so
 *.dylib
-Cargo.lock
+
 /artifacts
 .cache/
