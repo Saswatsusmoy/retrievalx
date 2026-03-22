@@ -1,0 +1,9 @@
+# Global ownership
+* @retrievalx/maintainers
+
+# Security and release controls
+SECURITY.md @retrievalx/maintainers
+.github/workflows/* @retrievalx/maintainers
+pyproject.toml @retrievalx/maintainers
+Cargo.toml @retrievalx/maintainers
+Cargo.lock @retrievalx/maintainers

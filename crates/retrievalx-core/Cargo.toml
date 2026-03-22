@@ -1,0 +1,31 @@
+[package]
+name = "retrievalx-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+parking_lot.workspace = true
+rayon.workspace = true
+roaring.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+retrievalx-tokenize = { path = "../retrievalx-tokenize" }
+
+[dev-dependencies]
+criterion.workspace = true
+
+[[bench]]
+name = "indexing_bench"
+harness = false
+
+[[bench]]
+name = "query_bench"
+harness = false
+
+[[bench]]
+name = "topk_bench"
+harness = false

@@ -1,0 +1,16 @@
+/target
+**/__pycache__
+*.pyc
+.venv
+.audit-venv
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.DS_Store
+/dist
+/wheels
+*.so
+*.dylib
+Cargo.lock
+/artifacts
+.cache/

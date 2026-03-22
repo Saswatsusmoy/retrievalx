@@ -1,0 +1,27 @@
+name: bench
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bench-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  criterion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: run benches
+        run: cargo bench -p retrievalx-core --bench indexing_bench --bench query_bench --bench topk_bench
+      - name: upload criterion artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: criterion-output
+          path: target/criterion

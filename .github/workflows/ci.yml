@@ -1,0 +1,89 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo check
+        run: cargo check --workspace --all-targets --all-features --locked
+      - name: rustfmt
+        run: cargo fmt --all --check
+      - name: clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: tests
+        run: cargo test --workspace --all-features --locked
+      - name: docs
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --workspace --no-deps --locked
+
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+      - name: install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install maturin pytest ruff mypy twine
+      - name: build extension wheel
+        run: maturin build --release -m crates/retrievalx-py/Cargo.toml
+      - name: wheel metadata check
+        run: python -m twine check target/wheels/*
+      - name: install extension
+        run: pip install --force-reinstall --no-deps target/wheels/retrievalx-*.whl
+      - name: smoke import
+        run: python -c "import retrievalx; print(retrievalx.__version__ if hasattr(retrievalx, '__version__') else 'ok')"
+      - name: lint
+        run: ruff check python examples
+      - name: typecheck
+        run: mypy python/retrievalx
+      - name: tests
+        run: pytest -q python/tests
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit,cargo-deny
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: cargo-audit
+        run: cargo audit
+      - name: cargo-deny
+        run: cargo deny check
+      - name: pip-audit
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit
+          pip install .
+          pip-audit

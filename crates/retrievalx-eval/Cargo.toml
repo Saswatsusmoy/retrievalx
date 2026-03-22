@@ -1,0 +1,15 @@
+[package]
+name = "retrievalx-eval"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+retrievalx-core = { path = "../retrievalx-core" }
+reqwest = { workspace = true, features = ["blocking"] }
+zip = { version = "2.2", default-features = false, features = ["deflate"] }

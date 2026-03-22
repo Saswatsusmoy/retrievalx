@@ -1,0 +1,19 @@
+[package]
+name = "retrievalx-py"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "retrievalx_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+parking_lot.workspace = true
+pyo3.workspace = true
+serde_json.workspace = true
+retrievalx-core = { path = "../retrievalx-core" }
+retrievalx-eval = { path = "../retrievalx-eval" }
+retrievalx-persist = { path = "../retrievalx-persist" }

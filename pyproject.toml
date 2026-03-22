@@ -1,0 +1,75 @@
+[build-system]
+requires = ["maturin>=1.6,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "retrievalx"
+version = "0.1.0"
+description = "The complete BM25 engine for Python: production-scale, Rust-native"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+keywords = ["bm25", "information-retrieval", "search", "rag", "ranking"]
+authors = [
+  { name = "retrievalx maintainers" }
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Rust",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Text Processing :: Indexing",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/retrievalx/retrievalx"
+Repository = "https://github.com/retrievalx/retrievalx"
+Documentation = "https://github.com/retrievalx/retrievalx/tree/main/docs"
+Changelog = "https://github.com/retrievalx/retrievalx/releases"
+Issues = "https://github.com/retrievalx/retrievalx/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "maturin>=1.6,<2.0",
+  "ruff>=0.6.0",
+  "mypy>=1.11",
+]
+bench = [
+  "rank-bm25>=0.2.2",
+  "numpy>=1.24",
+]
+
+[tool.maturin]
+manifest-path = "crates/retrievalx-py/Cargo.toml"
+module-name = "retrievalx._native"
+python-source = "python"
+features = ["pyo3/extension-module"]
+
+[tool.pytest.ini_options]
+pythonpath = ["python"]
+testpaths = ["python/tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+strict_optional = true
