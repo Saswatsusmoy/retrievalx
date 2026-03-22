@@ -51,6 +51,14 @@ bench = [
   "numpy>=1.24",
 ]
 
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "maturin>=1.6,<2.0",
+  "ruff>=0.6.0",
+  "mypy>=1.11",
+]
+
 [tool.maturin]
 manifest-path = "crates/retrievalx-py/Cargo.toml"
 module-name = "retrievalx._native"

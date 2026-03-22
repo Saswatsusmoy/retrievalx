@@ -13,6 +13,12 @@ The complete BM25 engine for Python — all major scoring variants, multiple ret
 ## Installation
 
 ```bash
+uv add retrievalx
+```
+
+or with pip:
+
+```bash
 pip install retrievalx
 ```
 
@@ -197,7 +203,10 @@ Details: [docs/architecture.md](docs/architecture.md) | [docs/algorithms.md](doc
 ## Development
 
 ```bash
-# Setup
+# Setup with uv
+uv sync --extra dev
+
+# Or with pip
 python -m venv .venv && source .venv/bin/activate
 pip install -e .[dev]
 
@@ -205,8 +214,8 @@ pip install -e .[dev]
 ./scripts/check_all.sh
 
 # Run benchmarks
-pip install -e .[bench]
-python examples/benchmark_retrievalx_vs_rank_bm25.py --dataset scifact
+uv sync --extra bench
+uv run python examples/benchmark_retrievalx_vs_rank_bm25.py --dataset scifact
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
