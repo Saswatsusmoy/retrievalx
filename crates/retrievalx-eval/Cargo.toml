@@ -6,10 +6,14 @@ rust-version.workspace = true
 license.workspace = true
 authors.workspace = true
 
+[features]
+default = ["beir"]
+beir = ["dep:reqwest", "dep:zip"]
+
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 retrievalx-core = { path = "../retrievalx-core" }
-reqwest = { workspace = true, features = ["blocking"] }
-zip = { version = "2.2", default-features = false, features = ["deflate"] }
+reqwest = { workspace = true, features = ["blocking"], optional = true }
+zip = { version = "2.2", default-features = false, features = ["deflate"], optional = true }

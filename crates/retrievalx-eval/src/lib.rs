@@ -1,9 +1,11 @@
 #![forbid(unsafe_code)]
 
+#[cfg(feature = "beir")]
 pub mod beir;
 pub mod metrics;
 pub mod profiler;
 
+#[cfg(feature = "beir")]
 pub use beir::{
     dataset_url, known_datasets, run_benchmark, run_benchmark_on_dataset, run_recall_degradation,
     run_recall_degradation_on_dataset, run_variant_comparison, run_variant_comparison_on_dataset,

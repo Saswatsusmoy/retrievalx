@@ -15,5 +15,5 @@ parking_lot.workspace = true
 pyo3.workspace = true
 serde_json.workspace = true
 retrievalx-core = { path = "../retrievalx-core" }
-retrievalx-eval = { path = "../retrievalx-eval" }
+retrievalx-eval = { path = "../retrievalx-eval", default-features = false }
 retrievalx-persist = { path = "../retrievalx-persist" }
