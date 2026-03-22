@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "retrievalx"
-version = "0.1.0"
+version = "0.1.1"
 description = "The complete BM25 engine for Python: production-scale, Rust-native"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -54,6 +54,7 @@ manifest-path = "crates/retrievalx-py/Cargo.toml"
 module-name = "retrievalx._native"
 python-source = "python"
 features = ["pyo3/extension-module"]
+include = ["LICENSE", "NOTICE"]
 
 [tool.pytest.ini_options]
 pythonpath = ["python"]
