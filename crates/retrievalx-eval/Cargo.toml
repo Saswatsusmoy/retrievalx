@@ -16,4 +16,4 @@ serde_json.workspace = true
 thiserror.workspace = true
 retrievalx-core = { path = "../retrievalx-core" }
 reqwest = { workspace = true, features = ["blocking"], optional = true }
-zip = { version = "2.2", default-features = false, features = ["deflate"], optional = true }
+zip = { version = "8.4", default-features = false, features = ["deflate"], optional = true }
