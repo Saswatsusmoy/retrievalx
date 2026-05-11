@@ -37,10 +37,10 @@ jobs:
             target: x86_64-pc-windows-msvc
             manylinux: "off"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: build wheel
@@ -49,7 +49,7 @@ jobs:
           command: build
           args: --release --target ${{ matrix.platform.target }}
           manylinux: ${{ matrix.platform.manylinux }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.platform.target }}
           path: target/wheels
@@ -59,10 +59,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: build sdist
@@ -70,7 +70,7 @@ jobs:
         with:
           command: sdist
           args: --out target/wheels
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: sdist
           path: target/wheels
@@ -81,10 +81,10 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: dist-artifacts
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: collect dists

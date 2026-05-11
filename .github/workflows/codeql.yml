@@ -25,9 +25,9 @@ jobs:
       matrix:
         language: [python, rust]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
       - name: Build (Rust)
@@ -37,4 +37,4 @@ jobs:
         if: matrix.language == 'rust'
         run: cargo build --workspace --all-features --locked
       - name: Analyze
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
