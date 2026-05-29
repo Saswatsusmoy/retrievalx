@@ -52,7 +52,7 @@ pub struct TermStats {
     pub term_id: u32,
     pub doc_freq: u32,
     pub collection_freq: u64,
-    pub max_tf: u16,
+    pub max_tf: u32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -777,7 +777,7 @@ impl InvertedIndex {
 
         stats.doc_freq += 1;
         stats.collection_freq += u64::from(tf);
-        stats.max_tf = stats.max_tf.max(tf.min(u32::from(u16::MAX)) as u16);
+        stats.max_tf = stats.max_tf.max(tf);
     }
 
     fn rebuild_block_max(&mut self) {
